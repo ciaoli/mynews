@@ -11,12 +11,19 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get("/", function () {
+    return view("welcome");
 });
 
-Route::group(['prefix' => 'admin'], function() {
-    Route::get('news/create', 'Admin\NewsController@add');
+Route::group(["prefix" => "admin", "middleware" => "auth"], function() {
+    Route::get("news/create", "Admin¥NewsController@add");
+    Route::post("news/create","Admin¥NewsController@create");
+});
+
+Route::group(["prefix" => "admin", "middleware" => "auth"], function() {
+    Route::get("profile/create", "Admin¥ProfileController@add");
+    Route::post("profile/create", "Admin¥ProfileController@create");
+    Route::post("profile/edit", "Admin¥ProfileController@update");
 });
 
 //3.http://XXXXXX.jp/XXX というアクセスが来たときに、 
@@ -31,20 +38,23 @@ Route::get("XXX", "Admin\AAAController@bbb");
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get("/home", "HomeController@index")->name("home");
 
-Route::group(["prefix" => "admin"], function() {
+Route::group(["prefix" => "admin", "middleware" => "auth"], function() {
     Route::get("news/create","Admin\NewsController@add")->middleware("auth");
+    Route::post("news/create", "Admin\NewsController@create");
 });
 
+    
 Route::group(["prefix" => "admin"], function() {
     Route::get("profile/create","Admin\ProfileController@add")->middleware("auth");
-
-    Route::get("profile/edit","Admin\ProfileController@edit")->middleware("auth");
-
+    Route::post("profile/create", "Admin\ProfileController@create");
+    
+    Route::get("profile/edit", "Admin\ProfileController@edit")->middleware("auth");
+    Route::post("profile/edit", "Admin\ProfileController@edit");
 
 });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get("/home", "HomeController@index")->name("home");
